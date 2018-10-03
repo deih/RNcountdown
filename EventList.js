@@ -3,7 +3,7 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-
+import ActionButton from 'react-native-action-button';
 import EventCard from './EventCard';
 
 const styles = StyleSheet.create({
@@ -36,9 +36,12 @@ class EventList extends Component {
     this.setState({ events });
   }
 
+  handleAddEvent = () => {
+    this.props.navigation.navigate('form');
+  }
 
   render() {
-    return (
+    return [
       <FlatList
         key="flatlist"
         data={this.state.events}
@@ -49,8 +52,13 @@ class EventList extends Component {
             event={item}
           />
         )}
+      />,
+      <ActionButton
+        key="fab"
+        onPress={this.handleAddEvent}
+        buttonColor="rgba(231, 76, 60, 1)"
       />
-    );
+    ];
   }
 }
 
