@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { FlatList, Text, StyleSheet } from 'react-native';
-
+import {
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 
 import EventCard from './EventCard';
 
@@ -12,12 +14,21 @@ const styles = StyleSheet.create({
   },
 });
 
-class EventList extends React.Component {
+class EventList extends Component {
   state = {
-    events: []
+    events: [],
   }
 
-  componentDidMount () {
+  componentDidMount() {
+    setInterval(() => {
+      this.setState({
+        events: this.state.events.map(evt => ({
+          ...evt,
+          timer: Date.now(),
+        })),
+      });
+    }, 1000);
+
     const events = require('./db.json').events.map(e => ({
       ...e,
       date: new Date(e.date),
@@ -25,15 +36,21 @@ class EventList extends React.Component {
     this.setState({ events });
   }
 
-  render () {
+
+  render() {
     return (
-          <FlatList
-            style={styles.list}
-            data={this.state.events}
-            renderItem={({item}) => <EventCard event={item} />}
-            keyExtractor = {item => item.id}
+      <FlatList
+        key="flatlist"
+        data={this.state.events}
+        style={styles.list}
+        keyExtractor={item => item.id}
+        renderItem={({ item, separators }) => (
+          <EventCard
+            event={item}
           />
-    )
+        )}
+      />
+    );
   }
 }
 
