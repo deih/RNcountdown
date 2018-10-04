@@ -6,6 +6,8 @@ import {
   TextInput,
   StyleSheet,
 } from 'react-native';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import { formatDateTime } from './api';
 
 const styles = StyleSheet.create({
   fieldContainer: {
@@ -18,12 +20,52 @@ const styles = StyleSheet.create({
     margin: 0,
     marginRight: 7,
     marginLeft: 10,
-  }
+  },
+  button: {
+    height: 50,
+    backgroundColor: '#48BBEC',
+    borderColor: '#48BBEC',
+    alignSelf: 'stretch',
+    margin: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  borderTop: {
+    borderColor: '#85878c',
+    borderTopWidth: 1,
+  },
 });
 
 class EventForm extends Component {
+  state = {
+    title: null,
+    date: '',
+  };
+
   handleAddPress = () => {
-    this.props.navigation.navigate('form');
+    console.log('saving event: ', this.state);
+    this.props.navigation.goBack();
+  }
+
+  handleDatePress = () => {
+    this.setState({ showDatePicker: true });
+  }
+
+  handleDatePicked = (date) => {
+    this.setState({
+      date,
+    }),
+
+    this.handleDatePickerHide();
+  }
+
+  handleDatePickerHide = () => {
+    this.setState({ showDatePicker: false });
   }
 
   render() {
@@ -39,11 +81,29 @@ class EventForm extends Component {
             placeholder="Event title"
             spellCheck={false}
           />
+
+        <TextInput
+          style={[styles.text, styles.borderTop]}
+          placeholder="Event date"
+          spellCheck={false}
+          value={formatDateTime(this.state.date.toString())}
+          editable={!this.state.showDatePicker}
+          onFocus={this.handleDatePress}
+        />
+
+        <DateTimePicker
+          isVisible={this.state.showDatePicker}
+          mode="datetime"
+          onConfirm={this.handleDatePicked}
+          onCancel={this.handleDatePickerHide}
+        />
+
         </View>
         <TouchableHighlight
           onPress={this.handleAddPress}
+          style={styles.button}
         >
-          <Text>Add</Text>
+          <Text style={styles.buttonText}>Add</Text>
         </TouchableHighlight>
       </View>
     );
